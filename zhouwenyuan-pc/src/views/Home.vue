@@ -1,11 +1,14 @@
 <template>
   <div class="home">
-    <h1>引文管理系统</h1>
-    <div class="search">
-      <el-input placeholder="请输入文章ID" v-model="input" clearable> </el-input>
-      <el-row>
-        <el-button type="primary" @click="getDetail">搜索</el-button>
-      </el-row>
+    <div class="app-page HACK__is-desktop home-page__search_emphasis">
+      <h1 class="title_color title_position">引用内容分析平台</h1>
+      <div class="search">
+        <el-input placeholder="请输入文章ID/标题" v-model="input" clearable>
+        </el-input>
+        <el-row>
+          <el-button type="primary" @click="getDetail">搜索</el-button>
+        </el-row>
+      </div>
     </div>
   </div>
 </template>
@@ -41,7 +44,7 @@ export default {
       if (flag != 1) {
         this.$message({
           showClose: true,
-          message: "没有这个文章ID，请重新输入！",
+          message: "没有这个文章ID/标题，请重新输入！",
           type: "error",
         });
         this.input = "";
@@ -51,6 +54,32 @@ export default {
 };
 </script>
 <style>
+* {
+  margin: 0;
+  padding: 0;
+}
+.title_position {
+  position: relative;
+  top: 200px;
+}
+.title_color {
+  color: #f3d25f;
+}
+.home-page__search_emphasis {
+  background: no-repeat 0 0, #11223d;
+  background-image: url(../assets/homepage-background.svg);
+  height: 100vh;
+}
+.app-page {
+  display: grid;
+  grid-template-areas:
+    "app-page__header"
+    "app-page__content"
+    "app-page__footer";
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr auto;
+  min-height: var(--app-height);
+}
 .search {
   display: flex;
   width: 80%;
