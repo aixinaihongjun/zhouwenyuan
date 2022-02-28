@@ -1,10 +1,18 @@
 <template>
   <div class="home">
     <div class="app-page HACK__is-desktop home-page__search_emphasis">
+      <div class="manager-button">
+        <el-button type="success" @click="gotoManager">管理员系统</el-button>
+      </div>
+      <div class="hello-area" v-if="$store.state.userInfo.isLogin">
+        <div class="hello">你好，{{ $store.state.userInfo.username }}</div>
+        <el-button style="margin-left: 10px" type="danger" @click="exit"
+          >退出登录</el-button
+        >
+      </div>
       <h1 class="title_color title_position">引用内容分析平台</h1>
       <div class="search">
-        <el-input placeholder="请输入文章ID/标题" v-model="input" clearable>
-        </el-input>
+        <el-input placeholder="请输入文章ID/标题" v-model="input" clearable> </el-input>
         <el-row>
           <el-button type="primary" @click="getDetail">搜索</el-button>
         </el-row>
@@ -50,6 +58,16 @@ export default {
         this.input = "";
       }
     },
+    gotoManager() {
+      if (this.$store.state.userInfo.isLogin) {
+        this.$router.push("/manager");
+      } else {
+        this.$router.push("/login");
+      }
+    },
+    exit() {
+      this.$store.commit("logout");
+    },
   },
 };
 </script>
@@ -71,7 +89,8 @@ export default {
   height: 100vh;
 }
 .app-page {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   grid-template-areas:
     "app-page__header"
     "app-page__content"
@@ -84,5 +103,22 @@ export default {
   display: flex;
   width: 80%;
   margin: auto;
+}
+.manager-button {
+  display: flex;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+.hello-area {
+  display: flex;
+  position: absolute;
+  left: 10px;
+  top: 10px;
+}
+.hello {
+  color: #fff;
+  font-size: 20px;
+  line-height: 40px;
 }
 </style>

@@ -1,14 +1,15 @@
 <template>
   <div id="detail_page">
     <div class="page">
+      <div class="main-button">
+        <router-link :to="{ path: '/' }">
+          <el-button type="success">回到首页</el-button>
+        </router-link>
+      </div>
       <div class="content">
         <h2 class="top_title">{{ article.title }}</h2>
         <span class="authorname font_big">Author:</span>
-        <span
-          v-for="author in article.authors"
-          :key="author.author"
-          class="authorname"
-        >
+        <span v-for="author in article.authors" :key="author.author" class="authorname">
           {{ author.author }}
         </span>
         <br />
@@ -17,115 +18,222 @@
         <p class="citation_abstract">引用摘要：</p>
         <div
           class="line_height abstractsize"
-          v-for="cite in article.cite_abstract"
+          v-for="(cite, index) in article.cite_abstract"
           :key="cite.id"
         >
-          <div>{{ cite.cite_abstract_id }}.{{ cite.cite_abstract }}</div>
+          <div>{{ index + 1 }}.{{ cite.cite_abstract }}</div>
           <!-- <div>关键词：{{ cite.key_words }}</div> -->
         </div>
-        <div
-          id="positive_citation"
-          v-bind:class="{ display_citation: show_positive }"
-        >
-          <h4 class="citation_abstract">正面引用摘要：</h4>
+        <div id="positive_citation" v-bind:class="{ display_citation: show_positive }">
+          <h4 class="citation_abstract">正面引用情感摘要：</h4>
           <div
             class="line_height abstractsize"
-            v-for="abs in article.citation_abstract.positive"
+            v-for="(abs, index) in article.citation_abstract.positive"
             :key="abs.id"
           >
-            <div>
-              {{ abs.positive_abstract_id }}.{{ abs.positive_abstract }}
-            </div>
+            <div>{{ index + 1 }}.{{ abs.positive_abstract }}</div>
           </div>
           <h4 class="citation_abstract">
-            {{ article.citation.positive.length }}条正面引用
+            {{ article.citation.positive.length }}条正面引用情感
           </h4>
           <div
             class="line_height abstractsize"
-            v-for="positive in article.citation.positive"
+            v-for="(positive, index) in article.citation.positive"
             :key="positive.id"
           >
-            <div>
-              {{ positive.positive_citation_id }}.{{
-                positive.positive_citation
-              }}
-            </div>
+            <div>{{ index + 1 }}.{{ positive.positive_citation }}</div>
           </div>
         </div>
-        <div
-          id="neutral_citation"
-          v-bind:class="{ display_citation: show_neutral }"
-        >
-          <h4 class="citation_abstract">中性引用摘要：</h4>
+        <div id="neutral_citation" v-bind:class="{ display_citation: show_neutral }">
+          <h4 class="citation_abstract">中性引用情感摘要：</h4>
           <div
             class="line_height abstractsize"
-            v-for="abs in article.citation_abstract.neutral"
+            v-for="(abs, index) in article.citation_abstract.neutral"
             :key="abs.id"
           >
-            <div>{{ abs.neutral_abstract_id }}.{{ abs.neutral_abstract }}</div>
+            <div>{{ index + 1 }}.{{ abs.neutral_abstract }}</div>
           </div>
           <h4 class="citation_abstract">
-            {{ article.citation.neutral.length }}条中性引用
+            {{ article.citation.neutral.length }}条中性引用情感
           </h4>
           <div
             class="line_height abstractsize"
-            v-for="neutral in article.citation.neutral"
+            v-for="(neutral, index) in article.citation.neutral"
             :key="neutral.id"
           >
-            <div>
-              {{ neutral.neutral_citation_id }}.{{ neutral.neutral_citation }}
-            </div>
+            <div>{{ index + 1 }}.{{ neutral.neutral_citation }}</div>
           </div>
         </div>
-        <div
-          id="negative_citation"
-          v-bind:class="{ display_citation: show_negative }"
-        >
-          <h4 class="citation_abstract">负面引用摘要：</h4>
+        <div id="negative_citation" v-bind:class="{ display_citation: show_negative }">
+          <h4 class="citation_abstract">负面引用情感摘要：</h4>
           <div
             class="line_height abstractsize"
-            v-for="abs in article.citation_abstract.negative"
+            v-for="(abs, index) in article.citation_abstract.negative"
             :key="abs.id"
           >
-            <div>
-              {{ abs.negative_abstract_id }}.{{ abs.negative_abstract }}
-            </div>
+            <div>{{ index + 1 }}.{{ abs.negative_abstract }}</div>
           </div>
           <h4 class="citation_abstract">
-            {{ article.citation.negative.length }}条负面引用
+            {{ article.citation.negative.length }}条负面引用情感
           </h4>
           <div
             class="line_height abstractsize"
-            v-for="negative in article.citation.negative"
+            v-for="(negative, index) in article.citation.negative"
             :key="negative.id"
           >
-            <div>
-              {{ negative.negative_citation_id }}.{{
-                negative.negative_citation
-              }}
-            </div>
+            <div>{{ index + 1 }}.{{ negative.negative_citation }}</div>
+          </div>
+        </div>
+        <div id="use" v-bind:class="{ display_citation: show_use }">
+          <h4 class="citation_abstract">
+            {{ article.citation_purpose.use.length }}条使用引用目的
+          </h4>
+          <div
+            class="line_height abstractsize"
+            v-for="(cite, index) in article.citation_purpose.use"
+            :key="cite.id"
+          >
+            <div>{{ index + 1 }}.{{ cite.citation }}</div>
+          </div>
+        </div>
+        <div id="substantiating" v-bind:class="{ display_citation: show_substantiating }">
+          <h4 class="citation_abstract">
+            {{ article.citation_purpose.substantiating.length }}条证实引用目的
+          </h4>
+          <div
+            class="line_height abstractsize"
+            v-for="(cite, index) in article.citation_purpose.substantiating"
+            :key="cite.id"
+          >
+            <div>{{ index + 1 }}.{{ cite.citation }}</div>
+          </div>
+        </div>
+        <div id="criticizing" v-bind:class="{ display_citation: show_criticizing }">
+          <h4 class="citation_abstract">
+            {{ article.citation_purpose.criticizing.length }}条批评引用目的
+          </h4>
+          <div
+            class="line_height abstractsize"
+            v-for="(cite, index) in article.citation_purpose.criticizing"
+            :key="cite.id"
+          >
+            <div>{{ index + 1 }}.{{ cite.citation }}</div>
+          </div>
+        </div>
+        <div id="comparison" v-bind:class="{ display_citation: show_comparison }">
+          <h4 class="citation_abstract">
+            {{ article.citation_purpose.comparison.length }}条比较引用目的
+          </h4>
+          <div
+            class="line_height abstractsize"
+            v-for="(cite, index) in article.citation_purpose.comparison"
+            :key="cite.id"
+          >
+            <div>{{ index + 1 }}.{{ cite.citation }}</div>
+          </div>
+        </div>
+        <div id="basis" v-bind:class="{ display_citation: show_basis }">
+          <h4 class="citation_abstract">
+            {{ article.citation_purpose.basis.length }}条基础引用目的
+          </h4>
+          <div
+            class="line_height abstractsize"
+            v-for="(cite, index) in article.citation_purpose.basis"
+            :key="cite.id"
+          >
+            <div>{{ index + 1 }}.{{ cite.citation }}</div>
+          </div>
+        </div>
+        <div id="neutral" v-bind:class="{ display_citation: show_neutral1 }">
+          <h4 class="citation_abstract">
+            {{ article.citation_purpose.neutral.length }}条客观引用目的
+          </h4>
+          <div
+            class="line_height abstractsize"
+            v-for="(cite, index) in article.citation_purpose.neutral"
+            :key="cite.id"
+          >
+            <div>{{ index + 1 }}.{{ cite.citation }}</div>
           </div>
         </div>
       </div>
       <div class="item">
-        <h3 class="total_citation">
-          <span
-            >{{
+        <div v-show="show_citation_type == 1">
+          <a href="#" class="citation" @click="displayEmotion">
+            引用情感：<span>{{
               article.citation.positive.length +
               article.citation.neutral.length +
               article.citation.negative.length
-            }}条引文</span
+            }}</span>
+          </a>
+          <a href="#" class="citation" @click="displayPurpose">
+            引用目的：
+            <span>{{
+              article.citation_purpose.substantiating.length +
+              article.citation_purpose.use.length +
+              article.citation_purpose.comparison.length +
+              article.citation_purpose.basis.length +
+              article.citation_purpose.neutral.length +
+              article.citation_purpose.criticizing.length
+            }}</span></a
           >
-        </h3>
-        <a href="#positive_citation" class="citation" @click="displayPositive">
-          正面引用：<span>{{ article.citation.positive.length }}</span>
-        </a>
-        <a href="#neutral_citation" class="citation" @click="displayNeutral">
-          中性引用：<span>{{ article.citation.neutral.length }}</span>
-        </a>
-        <a href="#negative_citation" class="citation" @click="displayNegative">
-          负面引用：<span>{{ article.citation.negative.length }}</span>
-        </a>
+        </div>
+        <div v-show="show_citation_type == 2">
+          <h3 class="total_citation">
+            <span
+              >{{
+                article.citation.positive.length +
+                article.citation.neutral.length +
+                article.citation.negative.length
+              }}条引用情感</span
+            >
+          </h3>
+          <a href="#positive_citation" class="citation" @click="displayPositive">
+            正面引用情感：<span>{{ article.citation.positive.length }}</span>
+          </a>
+          <a href="#neutral_citation" class="citation" @click="displayNeutral">
+            中性引用情感：<span>{{ article.citation.neutral.length }}</span>
+          </a>
+          <a href="#negative_citation" class="citation" @click="displayNegative">
+            负面引用情感：<span>{{ article.citation.negative.length }}</span>
+          </a>
+          <a href="" class="citation" @click="displayTotal"> 返回上一级 </a>
+        </div>
+        <div v-show="show_citation_type == 3">
+          <h3 class="total_citation">
+            <span
+              >{{
+                article.citation_purpose.substantiating.length +
+                article.citation_purpose.use.length +
+                article.citation_purpose.comparison.length +
+                article.citation_purpose.basis.length +
+                article.citation_purpose.neutral.length +
+                article.citation_purpose.criticizing.length
+              }}条引用目的</span
+            >
+          </h3>
+          <a href="#use" class="citation" @click="displayUse">
+            使用引用目的：<span>{{ article.citation_purpose.use.length }}</span>
+          </a>
+          <a href="#substantiating" class="citation" @click="displaySubstantiating">
+            证实引用目的：<span>{{
+              article.citation_purpose.substantiating.length
+            }}</span>
+          </a>
+          <a href="#criticizing" class="citation" @click="displayCriticizing">
+            批评引用目的：<span>{{ article.citation_purpose.criticizing.length }}</span>
+          </a>
+          <a href="#comparison" class="citation" @click="displayComparison">
+            比较引用目的：<span>{{ article.citation_purpose.comparison.length }}</span>
+          </a>
+          <a href="#basis" class="citation" @click="displayBasis">
+            基础引用目的：<span>{{ article.citation_purpose.basis.length }}</span>
+          </a>
+          <a href="#neutral" class="citation" @click="displayNeutral1">
+            客观引用目的：<span>{{ article.citation_purpose.neutral.length }}</span>
+          </a>
+          <a href="" class="citation" @click="displayTotal"> 返回上一级 </a>
+        </div>
       </div>
     </div>
   </div>
@@ -151,10 +259,25 @@ export default {
           neutral: [],
           negative: [],
         },
+        citation_purpose: {
+          substantiating: [],
+          use: [],
+          comparison: [],
+          basis: [],
+          neutral: [],
+          criticizing: [],
+        },
       },
       show_positive: true,
       show_neutral: true,
       show_negative: true,
+      show_substantiating: true,
+      show_use: true,
+      show_comparison: true,
+      show_basis: true,
+      show_neutral1: true,
+      show_criticizing: true,
+      show_citation_type: 1,
     };
   },
   created() {
@@ -172,16 +295,109 @@ export default {
       this.show_positive = false;
       this.show_neutral = true;
       this.show_negative = true;
+      this.show_use = true;
+      this.show_comparison = true;
+      this.show_basis = true;
+      this.show_neutral1 = true;
+      this.show_criticizing = true;
+      this.show_substantiating = true;
     },
     displayNeutral() {
       this.show_positive = true;
       this.show_neutral = false;
       this.show_negative = true;
+      this.show_use = true;
+      this.show_comparison = true;
+      this.show_basis = true;
+      this.show_neutral1 = true;
+      this.show_criticizing = true;
+      this.show_substantiating = true;
     },
     displayNegative() {
       this.show_positive = true;
       this.show_neutral = true;
       this.show_negative = false;
+      this.show_use = true;
+      this.show_comparison = true;
+      this.show_basis = true;
+      this.show_neutral1 = true;
+      this.show_criticizing = true;
+      this.show_substantiating = true;
+    },
+    displayUse() {
+      this.show_positive = true;
+      this.show_neutral = true;
+      this.show_negative = true;
+      this.show_use = false;
+      this.show_comparison = true;
+      this.show_basis = true;
+      this.show_neutral1 = true;
+      this.show_criticizing = true;
+      this.show_substantiating = true;
+    },
+    displayComparison() {
+      this.show_positive = true;
+      this.show_neutral = true;
+      this.show_negative = true;
+      this.show_use = true;
+      this.show_comparison = false;
+      this.show_basis = true;
+      this.show_neutral1 = true;
+      this.show_criticizing = true;
+      this.show_substantiating = true;
+    },
+    displayBasis() {
+      this.show_positive = true;
+      this.show_neutral = true;
+      this.show_negative = true;
+      this.show_use = true;
+      this.show_comparison = true;
+      this.show_basis = false;
+      this.show_neutral1 = true;
+      this.show_criticizing = true;
+      this.show_substantiating = true;
+    },
+    displayNeutral1() {
+      this.show_positive = true;
+      this.show_neutral = true;
+      this.show_negative = true;
+      this.show_use = true;
+      this.show_comparison = true;
+      this.show_basis = true;
+      this.show_neutral1 = false;
+      this.show_criticizing = true;
+      this.show_substantiating = true;
+    },
+    displayCriticizing() {
+      this.show_positive = true;
+      this.show_neutral = true;
+      this.show_negative = true;
+      this.show_use = true;
+      this.show_comparison = true;
+      this.show_basis = true;
+      this.show_neutral1 = true;
+      this.show_criticizing = false;
+      this.show_substantiating = true;
+    },
+    displaySubstantiating() {
+      this.show_positive = true;
+      this.show_neutral = true;
+      this.show_negative = true;
+      this.show_use = true;
+      this.show_comparison = true;
+      this.show_basis = true;
+      this.show_neutral1 = true;
+      this.show_criticizing = true;
+      this.show_substantiating = false;
+    },
+    displayEmotion() {
+      this.show_citation_type = 2;
+    },
+    displayPurpose() {
+      this.show_citation_type = 3;
+    },
+    displayTotal() {
+      this.show_citation_type = 1;
     },
   },
 };
@@ -205,7 +421,7 @@ export default {
   margin-right: 50px;
 }
 .item {
-  width: 150px;
+  width: 175px;
   background: #fff;
   position: fixed;
   top: 30px;
@@ -250,5 +466,11 @@ export default {
 }
 .total_citation {
   margin: 1rem 0;
+}
+.main-button {
+  display: flex;
+  position: absolute;
+  left: 10px;
+  top: 10px;
 }
 </style>
