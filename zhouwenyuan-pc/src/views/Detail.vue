@@ -167,8 +167,7 @@
             }}</span>
           </a>
           <a href="#" class="citation" @click="displayPurpose">
-            引用目的：
-            <span>{{
+            引用目的：<span>{{
               article.citation_purpose.substantiating.length +
               article.citation_purpose.use.length +
               article.citation_purpose.comparison.length +
