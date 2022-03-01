@@ -6,10 +6,17 @@
       </div>
       <div class="hello-area" v-if="$store.state.userInfo.isLogin">
         <div class="hello">你好，{{ $store.state.userInfo.username }}</div>
-        <el-button style="margin-left: 10px" type="danger" @click="exit"
+        <el-button style="margin-left: 10px" type="danger" @click="dialogVisible = true"
           >退出登录</el-button
         >
       </div>
+      <el-dialog title="提示" :visible.sync="dialogVisible" width="30%">
+        <span>确定要退出登录吗？</span>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="exit">确 定</el-button>
+        </span>
+      </el-dialog>
       <h1 class="title_color title_position">引用内容分析平台</h1>
       <div class="search">
         <el-input placeholder="请输入文章ID/标题" v-model="input" clearable> </el-input>
@@ -29,6 +36,7 @@ export default {
     return {
       input: "",
       articles: [],
+      dialogVisible: false,
     };
   },
   created() {
@@ -44,7 +52,10 @@ export default {
     getDetail() {
       var flag;
       this.articles.forEach((item) => {
-        if (this.input == item.number || this.input == item.title) {
+        if (
+          this.input == item.number ||
+          this.input.toUpperCase() == item.title.toUpperCase()
+        ) {
           this.$router.push("/" + item.id);
           flag = 1;
         }
@@ -66,7 +77,12 @@ export default {
       }
     },
     exit() {
+      this.dialogVisible = false;
       this.$store.commit("logout");
+      this.$message({
+        message: "您已成功退出登录!",
+        type: "success",
+      });
     },
   },
 };
