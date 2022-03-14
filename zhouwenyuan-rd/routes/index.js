@@ -116,6 +116,18 @@ router.get('/getArticleDetail/:id', async (ctx) => {
     WHERE t_criticizing.article_id = t_article.id AND t_article.id = ?`;
   let results15 = await getQueryData(sql15, [articleId]);
 
+  let sql16 =
+    `SELECT t_article.id as article_id, t_relevance_literature.content
+    FROM t_relevance_literature, t_article
+    WHERE t_relevance_literature.article_id = t_article.id AND t_article.id = ?`;
+  let results16 = await getQueryData(sql16, [articleId]);
+
+  let sql17 =
+    `SELECT t_article.id as article_id, t_time_literature.content
+    FROM t_time_literature, t_article
+    WHERE t_time_literature.article_id = t_article.id AND t_article.id = ?`;
+  let results17 = await getQueryData(sql17, [articleId]);
+
   article = {
     id: article.id,
     number: article.number,
@@ -140,6 +152,10 @@ router.get('/getArticleDetail/:id', async (ctx) => {
       basis: results13,
       neutral: results14,
       criticizing: results15,
+    },
+    literature: {
+      relevance: results16,
+      time: results17,
     }
   }
   ctx.body = article;
@@ -523,21 +539,18 @@ router.get('/getManager', async (ctx) => {
   child_process.execSync('cd /d "D:/zwy/shiyan" && python use_model.py');
   let data = fs.readFileSync("D:/zwy/shiyan/zwy.txt", "utf-8");
 
-  // let sql1 = `SELECT * FROM t_manager order by id desc limit 1`;
-  // let result1 = await getQueryData(sql1);
-  // let sentence1 = result1[0].cite_article_sentence;
-  // var fs1 = require("fs");
-  // var fd1 = fs1.openSync("D:/zwy/shiyan/123.txt", 'w');
-  // fs.writeSync(fd1, sentence1);
-  // fs.closeSync(fd1);
-  // child_process.execSync('cd /d "D:/zwy/shiyan" && python use_model.py');
-  // let data1 = fs.readFileSync("D:/zwy/shiyan/zwy.txt", "utf-8");
-
   ctx.body = {
     data: data,
-    // data1: data1,
     sentence: sentence,
   };
+});
+
+router.get('/getPic', async (ctx) => {
+  var fs = require("fs");
+  child_process.execSync('cd /d "D:/pythonProject2" && python biaoqian.py');
+  let data = fs.readFileSync("D:/pythonProject2/cloud_large.png", "base64");
+  // ctx.type = 'image/png';
+  ctx.body = data;
 });
 
 module.exports = router

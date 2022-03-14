@@ -2,10 +2,13 @@
   <div class="home">
     <div class="app-page HACK__is-desktop home-page__search_emphasis">
       <div class="manager-button">
-        <el-button type="success" @click="gotoManager">管理员系统</el-button>
+        <el-button type="warning" @click="gotoManager">管理员系统</el-button>
       </div>
       <div class="hello-area" v-if="$store.state.userInfo.isLogin">
-        <div class="hello">你好，{{ $store.state.userInfo.username }}</div>
+        <div class="block" style="margin-right: 10px">
+          <el-avatar :size="40" :src="circleUrl"></el-avatar>
+        </div>
+        <div class="hello">{{ $store.state.userInfo.username }}</div>
         <el-button style="margin-left: 10px" type="danger" @click="dialogVisible = true"
           >退出登录</el-button
         >
@@ -17,11 +20,17 @@
           <el-button type="primary" @click="exit">确 定</el-button>
         </span>
       </el-dialog>
-      <h1 class="title_color title_position">引用内容分析平台</h1>
+      <!-- <i class="iconfont">&#xe91a;</i> -->
+      <h1 class="title_color title_position">
+        <i class="el-icon-document-copy"></i>
+        引用内容分析平台
+      </h1>
       <div class="search">
         <el-input placeholder="请输入文章ID/标题" v-model="input" clearable> </el-input>
         <el-row>
-          <el-button type="primary" @click="getDetail">搜索</el-button>
+          <el-button type="warning" icon="el-icon-search" @click="getDetail"
+            >搜索</el-button
+          >
         </el-row>
       </div>
     </div>
@@ -37,6 +46,7 @@ export default {
       input: "",
       articles: [],
       dialogVisible: false,
+      circleUrl: "https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
     };
   },
   created() {
@@ -128,9 +138,11 @@ export default {
 }
 .hello-area {
   display: flex;
+  justify-content: center;
   position: absolute;
   left: 10px;
   top: 10px;
+  height: 40px;
 }
 .hello {
   color: #fff;

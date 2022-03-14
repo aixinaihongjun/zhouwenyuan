@@ -2,7 +2,7 @@
   <div id="manager">
     <div class="main-button">
       <router-link :to="{ path: '/' }">
-        <el-button type="success">回到首页</el-button>
+        <el-button type="success" icon="el-icon-arrow-left" circle></el-button>
       </router-link>
     </div>
     <div style="display: flex; flex-direction: column; height: 100%">
@@ -14,13 +14,20 @@
       </div>
 
       <div
-        style="width: 100%; height: 50px; margin-top: 20px"
+        style="width: 100%; margin-top: 20px"
         :v-show="loading"
         v-loading="loading"
         element-loading-text="正在判断，请等待片刻......"
         element-loading-spinner="el-icon-loading"
       >
-        <h2 style="line-height: 50px">{{ returnType }}</h2>
+        <el-alert
+          :title="returnType == '' ? '等待判断结果' : returnType"
+          type="success"
+          style="width: 80%; margin-left: 140px"
+          :closable="false"
+        >
+        </el-alert>
+        <!-- <h2 style="line-height: 50px">{{ returnType }}</h2> -->
       </div>
 
       <div
@@ -102,7 +109,7 @@
         <el-button style="margin-left: 20px" type="primary" @click="find">查询</el-button>
       </div>
       <div style="margin: 20px 150px">
-        <el-table :data="tableData" border style="width: 100%" height="390">
+        <el-table :data="tableData" border style="width: 100%" height="340">
           <el-table-column type="index" label="序号" width="50"> </el-table-column>
           <el-table-column prop="cite" label="引文"> </el-table-column>
           <el-table-column fixed="right" label="操作" width="100">

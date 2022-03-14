@@ -3,7 +3,7 @@
     <div class="register-area">
       <div class="main-button">
         <router-link :to="{ path: '/' }">
-          <el-button type="success">回到首页</el-button>
+          <el-button type="success" icon="el-icon-arrow-left" circle></el-button>
         </router-link>
       </div>
       <h2>管理员注册</h2>

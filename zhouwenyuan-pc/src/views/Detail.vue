@@ -3,19 +3,25 @@
     <div class="page">
       <div class="main-button">
         <router-link :to="{ path: '/' }">
-          <el-button type="success">回到首页</el-button>
+          <el-button type="success" icon="el-icon-arrow-left" circle></el-button>
         </router-link>
       </div>
       <div class="content">
         <h2 class="top_title">{{ article.title }}</h2>
-        <span class="authorname font_big">Author:</span>
-        <span v-for="author in article.authors" :key="author.author" class="authorname">
-          {{ author.author }}
-        </span>
-        <br />
-        <span class="font_big abstractsize">Abstract: </span>
-        <span class="line_height abstractsize">{{ article.abstract }}</span>
-        <p class="citation_abstract">引用摘要：</p>
+        <div style="margin-top: 10px">
+          <span class="authorname font_big">Author:</span>
+          <span v-for="author in article.authors" :key="author.author" class="authorname">
+            {{ author.author }}
+          </span>
+        </div>
+        <div style="margin-top: 10px">
+          <span class="font_big abstractsize">Abstract: </span>
+          <span class="line_height abstractsize">{{ article.abstract }}</span>
+        </div>
+        <el-button type="primary" style="margin-top: 10px" @click="getPic"
+          >引用主题可视化</el-button
+        >
+        <p class="citation_abstract">引文摘要：</p>
         <div
           class="line_height abstractsize"
           v-for="(cite, index) in article.cite_abstract"
@@ -156,8 +162,47 @@
             <div>{{ index + 1 }}.{{ cite.citation }}</div>
           </div>
         </div>
+        <!-- <div id="relevance" v-bind:class="{ display_citation: show_relevance }">
+          <h4 class="citation_abstract">
+            {{ article.literature.relevance.length }}条按相关度推荐引文
+          </h4>
+          <div
+            class="line_height abstractsize"
+            v-for="(con, index) in article.literature.relevance"
+            :key="con.id"
+          >
+            <div>
+              <a href="#" class="doc">{{ index + 1 }}.{{ con.content }}</a>
+            </div>
+          </div>
+        </div>
+        <div id="time" v-bind:class="{ display_citation: show_time }">
+          <h4 class="citation_abstract">
+            {{ article.literature.time.length }}条按时间推荐引文
+          </h4>
+          <div
+            class="line_height abstractsize"
+            v-for="(con, index) in article.literature.time"
+            :key="con.id"
+          >
+            <div>
+              <a href="#" class="doc">{{ index + 1 }}.{{ con.content }}</a>
+            </div>
+          </div>
+        </div> -->
       </div>
       <div class="item">
+        <!-- <div v-show="show_citation_type == 0">
+          <a href="#" class="citation" @click="displayTotal">
+            <span>{{
+              article.citation.positive.length +
+              article.citation.neutral.length +
+              article.citation.negative.length
+            }}</span
+            >条引文
+          </a>
+          <a href="#" class="citation" @click="displayDoc"> 相关文献推荐</a>
+        </div> -->
         <div v-show="show_citation_type == 1">
           <a href="#" class="citation" @click="displayEmotion">
             引用情感：<span>{{
@@ -174,8 +219,9 @@
               article.citation_purpose.basis.length +
               article.citation_purpose.neutral.length +
               article.citation_purpose.criticizing.length
-            }}</span></a
-          >
+            }}</span>
+          </a>
+          <!-- <a href="#" class="citation" @click="displayArticle"> 返回上一级 </a> -->
         </div>
         <div v-show="show_citation_type == 2">
           <h3 class="total_citation">
@@ -196,7 +242,7 @@
           <a href="#negative_citation" class="citation" @click="displayNegative">
             负面引用情感：<span>{{ article.citation.negative.length }}</span>
           </a>
-          <a href="" class="citation" @click="displayTotal"> 返回上一级 </a>
+          <a href="#" class="citation" @click="displayTotal"> 返回上一级 </a>
         </div>
         <div v-show="show_citation_type == 3">
           <h3 class="total_citation">
@@ -231,17 +277,46 @@
           <a href="#neutral" class="citation" @click="displayNeutral1">
             客观引用目的：<span>{{ article.citation_purpose.neutral.length }}</span>
           </a>
-          <a href="" class="citation" @click="displayTotal"> 返回上一级 </a>
+          <a href="#" class="citation" @click="displayTotal"> 返回上一级 </a>
+        </div>
+        <div v-show="show_citation_type == 4">
+          <a href="#relevance" class="citation" @click="displayRelevance">
+            按相关度推荐
+          </a>
+          <a href="#time" class="citation" @click="displayTime"> 按时间推荐</a>
+          <a href="#" class="citation" @click="displayArticle"> 返回上一级 </a>
         </div>
       </div>
     </div>
+    <!-- <el-dialog
+      title="引用主题可视化"
+      :visible.sync="citeVisible"
+      width="50%"
+      :append-to-body="true"
+      :modal-append-to-body="false"
+    >
+      <div
+        :v-show="loading"
+        v-loading="loading"
+        element-loading-text="正在加载，请等待片刻......"
+        element-loading-spinner="el-icon-loading"
+      >
+        <img :src="returnImg" alt="" style="width: 100%; height: 100%" />
+      </div>
+    </el-dialog> -->
+    <el-image-viewer v-if="citeVisible" :on-close="onClose" :url-list="[returnImg]" />
   </div>
 </template>
 
 <script>
+// 引入ElImageViewer组件
+import ElImageViewer from "element-ui/packages/image/src/image-viewer";
 import http from "@/utils/http.js";
 export default {
   name: "Detail",
+  components: {
+    ElImageViewer,
+  },
   data() {
     return {
       article: {
@@ -266,6 +341,10 @@ export default {
           neutral: [],
           criticizing: [],
         },
+        literature: {
+          relevance: [],
+          time: [],
+        },
       },
       show_positive: true,
       show_neutral: true,
@@ -276,7 +355,12 @@ export default {
       show_basis: true,
       show_neutral1: true,
       show_criticizing: true,
+      show_relevance: true,
+      show_time: true,
       show_citation_type: 1,
+      citeVisible: false,
+      returnImg: "",
+      // loading: false,
     };
   },
   created() {
@@ -290,6 +374,18 @@ export default {
         // console.log(this.article);
       });
     },
+    getPic() {
+      this.citeVisible = true;
+      // this.loading = true;
+      this.returnImg = require("../assets/loading.gif");
+      http.get("/getPic").then((res) => {
+        // this.loading = false;
+        this.returnImg = "data:image/png;base64," + res.data;
+      });
+    },
+    onClose() {
+      this.citeVisible = false;
+    },
     displayPositive() {
       this.show_positive = false;
       this.show_neutral = true;
@@ -300,6 +396,8 @@ export default {
       this.show_neutral1 = true;
       this.show_criticizing = true;
       this.show_substantiating = true;
+      this.show_relevance = true;
+      this.show_time = true;
     },
     displayNeutral() {
       this.show_positive = true;
@@ -311,6 +409,8 @@ export default {
       this.show_neutral1 = true;
       this.show_criticizing = true;
       this.show_substantiating = true;
+      this.show_relevance = true;
+      this.show_time = true;
     },
     displayNegative() {
       this.show_positive = true;
@@ -322,6 +422,8 @@ export default {
       this.show_neutral1 = true;
       this.show_criticizing = true;
       this.show_substantiating = true;
+      this.show_relevance = true;
+      this.show_time = true;
     },
     displayUse() {
       this.show_positive = true;
@@ -333,6 +435,8 @@ export default {
       this.show_neutral1 = true;
       this.show_criticizing = true;
       this.show_substantiating = true;
+      this.show_relevance = true;
+      this.show_time = true;
     },
     displayComparison() {
       this.show_positive = true;
@@ -344,6 +448,8 @@ export default {
       this.show_neutral1 = true;
       this.show_criticizing = true;
       this.show_substantiating = true;
+      this.show_relevance = true;
+      this.show_time = true;
     },
     displayBasis() {
       this.show_positive = true;
@@ -355,6 +461,8 @@ export default {
       this.show_neutral1 = true;
       this.show_criticizing = true;
       this.show_substantiating = true;
+      this.show_relevance = true;
+      this.show_time = true;
     },
     displayNeutral1() {
       this.show_positive = true;
@@ -366,6 +474,8 @@ export default {
       this.show_neutral1 = false;
       this.show_criticizing = true;
       this.show_substantiating = true;
+      this.show_relevance = true;
+      this.show_time = true;
     },
     displayCriticizing() {
       this.show_positive = true;
@@ -377,6 +487,8 @@ export default {
       this.show_neutral1 = true;
       this.show_criticizing = false;
       this.show_substantiating = true;
+      this.show_relevance = true;
+      this.show_time = true;
     },
     displaySubstantiating() {
       this.show_positive = true;
@@ -388,6 +500,34 @@ export default {
       this.show_neutral1 = true;
       this.show_criticizing = true;
       this.show_substantiating = false;
+      this.show_relevance = true;
+      this.show_time = true;
+    },
+    displayRelevance() {
+      this.show_positive = true;
+      this.show_neutral = true;
+      this.show_negative = true;
+      this.show_use = true;
+      this.show_comparison = true;
+      this.show_basis = true;
+      this.show_neutral1 = true;
+      this.show_criticizing = true;
+      this.show_substantiating = true;
+      this.show_relevance = false;
+      this.show_time = true;
+    },
+    displayTime() {
+      this.show_positive = true;
+      this.show_neutral = true;
+      this.show_negative = true;
+      this.show_use = true;
+      this.show_comparison = true;
+      this.show_basis = true;
+      this.show_neutral1 = true;
+      this.show_criticizing = true;
+      this.show_substantiating = true;
+      this.show_relevance = true;
+      this.show_time = false;
     },
     displayEmotion() {
       this.show_citation_type = 2;
@@ -397,6 +537,12 @@ export default {
     },
     displayTotal() {
       this.show_citation_type = 1;
+    },
+    displayArticle() {
+      this.show_citation_type = 0;
+    },
+    displayDoc() {
+      this.show_citation_type = 4;
     },
   },
 };
@@ -459,7 +605,7 @@ export default {
   font-weight: 700;
 }
 .citation_abstract {
-  margin-top: 30px;
+  margin-top: 10px;
   margin-bottom: 10px;
   font-weight: 700;
 }
@@ -471,5 +617,12 @@ export default {
   position: absolute;
   left: 10px;
   top: 10px;
+}
+.doc {
+  text-decoration: none;
+  color: #2c3e50;
+}
+.doc:hover {
+  text-decoration: underline;
 }
 </style>
