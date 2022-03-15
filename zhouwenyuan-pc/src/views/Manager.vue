@@ -9,7 +9,7 @@
       <div class="search" style="margin-top: 50px; height: 40px">
         <el-input placeholder="请输入引文句子" v-model="input" clearable> </el-input>
         <el-row>
-          <el-button type="primary" @click="toJudge">判断</el-button>
+          <el-button type="primary" icon="el-icon-search" @click="toJudge">判断</el-button>
         </el-row>
       </div>
 
