@@ -533,11 +533,11 @@ router.get('/getManager', async (ctx) => {
   let result = await getQueryData(sql);
   let sentence = result[0].cite_article_sentence;
   var fs = require("fs");
-  var fd = fs.openSync("D:/zwy/shiyan/123.txt", 'w');
+  var fd = fs.openSync("D:/zwy-design/shiyan/123.txt", 'w');
   fs.writeSync(fd, sentence);
   fs.closeSync(fd);
-  child_process.execSync('cd /d "D:/zwy/shiyan" && python use_model.py');
-  let data = fs.readFileSync("D:/zwy/shiyan/zwy.txt", "utf-8");
+  child_process.execSync('cd /d "D:/zwy-design/shiyan" && python use_model.py');
+  let data = fs.readFileSync("D:/zwy-design/shiyan/zwy.txt", "utf-8");
 
   ctx.body = {
     data: data,
@@ -547,8 +547,8 @@ router.get('/getManager', async (ctx) => {
 
 router.get('/getPic', async (ctx) => {
   var fs = require("fs");
-  child_process.execSync('cd /d "D:/pythonProject2" && python biaoqian.py');
-  let data = fs.readFileSync("D:/pythonProject2/cloud_large.png", "base64");
+  child_process.execSync('cd /d "D:/zwy-design/pythonProject2" && python biaoqian.py');
+  let data = fs.readFileSync("D:/zwy-design/pythonProject2/cloud_large.png", "base64");
   // ctx.type = 'image/png';
   ctx.body = data;
 });
